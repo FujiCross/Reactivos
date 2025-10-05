@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestor de Laboratorio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/7d3d3e2c1a.js" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(180deg, #e8f5e9, #ffffff);
+            margin: 0;
+            padding: 0;
+            color: #333;
+            overflow-x: hidden;
+            animation: fadeIn 1s ease;
+        }
+
+        /* === ENCABEZADO === */
+        header {
+            background: linear-gradient(90deg, #43a047, #66bb6a);
+            color: white;
+            text-align: center;
+            padding: 35px 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            border-bottom: 5px solid #81c784;
+            border-radius: 0 0 20px 20px;
+        }
+
+        header .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        header i {
+            font-size: 50px;
+            color: #c8e6c9;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 30px;
+            text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* === TARJETAS === */
+        main {
+            width: 90%;
+            max-width: 950px;
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .card {
+            background: #ffffffb8;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            border-left: 6px solid #66bb6a;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+        }
+
+        /* === TITULOS === */
+        h2 {
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* === FORMULARIOS === */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        input,
+        textarea,
+        button {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #bbb;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        textarea {
+            resize: none;
+            height: 70px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #66bb6a;
+            box-shadow: 0 0 6px rgba(102, 187, 106, 0.4);
+        }
+
+        button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #388e3c;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(56, 142, 60, 0.4);
+        }
+
+        /* === TABLA === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th,
+        td {
+            border: 1px solid #c8e6c9;
+            padding: 12px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        th {
+            background-color: #66bb6a;
+            color: white;
+        }
+
+        tr:hover td {
+            background-color: #f1f8e9;
+        }
+
+        /* === LISTA === */
+        .lista {
+            list-style: none;
+            padding: 0;
+        }
+
+        .lista li {
+            background: #f1f8e9;
+            border-left: 6px solid #66bb6a;
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s ease, background 0.2s;
+        }
+
+        .lista li:hover {
+            background: #dcedc8;
+            transform: translateX(5px);
+        }
+
+        /* === PIE === */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #4caf50;
+            color: white;
+            font-size: 14px;
+            border-top: 3px solid #81c784;
+            border-radius: 20px 20px 0 0;
+        }
+
+        /* === DECORACIONES === */
+        .decoraciones img {
+            position: absolute;
+            opacity: 0.35;
+            z-index: -1;
+        }
+
+        .flotante {
+            bottom: 20px;
+            left: 20px;
+            width: 100px;
+            animation: flotar 6s infinite ease-in-out;
+        }
+
+        .flotante2 {
+            top: 60px;
+            right: 40px;
+            width: 110px;
+            animation: flotar 8s infinite ease-in-out;
+        }
+
+        .flotante3 {
+            bottom: 100px;
+            right: 120px;
+            width: 90px;
+            animation: flotar 7s infinite ease-in-out;
+        }
+
+        .flotante4 {
+            top: 180px;
+            left: 80px;
+            width: 90px;
+            animation: flotar 10s infinite ease-in-out;
+        }
+
+        .flotante5 {
+            top: 350px;
+            right: 250px;
+            width: 90px;
+            animation: flotar 9s infinite ease-in-out;
+        }
+
+        /* === ANIMACIONES === */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes flotar {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .flotante,
+            .flotante2,
+            .flotante3,
+            .flotante4,
+            .flotante5 {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-flask"></i>
+            <h1>Gestor de Laboratorio</h1>
+        </div>
+        <p>Organiza tus prácticas, reactivos y materiales con estilo 💚</p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2><i class="fas fa-vial"></i>Registrar práctica</h2>
+            <form>
+                <input type="text" placeholder="Nombre de la práctica" required />
+                <textarea placeholder="Descripción o pasos a seguir"></textarea>
+                <div class="reactivos-container" id="reactivos-container">
+                    <h3>Reactivos Disponibles:</h3>
+                </div>
+                <button type="submit">Agregar práctica</button>
+            </form>
+        </section>
+
+        <button onclick="window.location.href='/registro_producto'">Registro de reactivos</button>
+    </main>
+
+    <footer>
+        <p>🧪 Laboratorio Local © 2025 | Tic-25b💚</p>
+    </footer>
+
+    <div class="decoraciones">
+        <img src="https://cdn-icons-png.flaticon.com/512/2921/2921820.png" class="flotante" alt="matraz">
+        <img src="https://cdn-icons-png.flaticon.com/512/6151/6151755.png" class="flotante2" alt="microscopio">
+        <img src="https://cdn-icons-png.flaticon.com/512/2821/2821637.png" class="flotante3" alt="tubo">
+        <img src="https://cdn-icons-png.flaticon.com/512/4625/4625870.png" class="flotante4" alt="átomo">
+        <img src="https://cdn-icons-png.flaticon.com/512/1038/1038117.png" class="flotante5" alt="ADN">
+    </div>
+
+    <script>
+        const reactivosContainer = document.getElementById("reactivos-container")
+
+        const response = fetch("/get_reactivos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        response.then((res) => {
+            return res.json()
+        }).then((data) => {
+            data.forEach((item) => {
+                if(Number(item["cantidad"]) > 0) {
+                    const label = document.createElement("label")
+
+                    const input = document.createElement("input")
+                    input.type = "checkbox"
+                    input.name = "reactivos"
+                    input.value = item["nombre"]
+
+                    const textLabel = document.createTextNode(item["nombre"])
+
+                    label.appendChild(input)
+                    label.appendChild(textLabel)
+
+                    reactivosContainer.appendChild(label)
+                    reactivosContainer.appendChild(document.createElement("br"))
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
