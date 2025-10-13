@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gestor de Laboratorio de Ciencias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+         :root {
+            --green-900: #1b5e20;
+            --green-700: #2e7d32;
+            --green-600: #388e3c;
+            --green-500: #4caf50;
+            --green-300: #a5d6a7;
+            --bg: #f7fff7;
+            --card: #ffffff;
+            --muted: #6b6b6b;
+            --shadow: 0 8px 24px rgba(14, 30, 10, 0.08);
+            --soft-shadow: 0 6px 18px rgba(14, 30, 10, 0.06);
+            --glass: rgba(255, 255, 255, 0.6);
+            --radius: 14px;
+            --accent-hover: rgba(46, 125, 50, 0.06);
+            --transition: 220ms cubic-bezier(.2, .9, .3, 1);
+        }
+        
+        * {
+            box-sizing: border-box
+        }
+        
+        html,
+        body {
+            height: 100%
+        }
+        
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(180deg, var(--bg), #ffffff);
+            color: #123514;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.45;
+            padding-bottom: 40px;
+        }
+        /* Banner */
+        
+        .banner {
+            background: linear-gradient(90deg, var(--green-700), var(--green-600));
+            color: #fff;
+            padding: 18px 20px;
+            position: relative;
+            box-shadow: var(--shadow);
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+        }
+        
+        .banner-inner {
+            text-align: center;
+        }
+        
+        .banner .title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: .4px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.12)
+        }
+        
+        .banner .subtitle {
+            margin-top: 6px;
+            font-size: .95rem;
+            opacity: .95
+        }
+        
+        .logo-slot {
+            position: absolute;
+            left: 20px;
+            top: 12px;
+            width: 76px;
+            height: 76px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) inset;
+        }
+        
+        .logo-slot img {
+            max-width: 68px;
+            max-height: 68px;
+            object-fit: contain;
+        }
+        /* Top nav tabs (persistente) */
+        
+        .top-nav-wrap {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+            position: sticky;
+            top: 12px;
+            z-index: 40;
+            pointer-events: auto;
+        }
+        
+        .top-nav {
+            display: flex;
+            gap: 18px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8));
+            padding: 10px 14px;
+            border-radius: 12px;
+            box-shadow: var(--soft-shadow);
+            align-items: center;
+            border: 1px solid rgba(10, 40, 12, 0.04);
+            backdrop-filter: blur(6px);
+        }
+        
+        .tab {
+            cursor: pointer;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+            color: var(--green-700);
+            position: relative;
+            transition: transform var(--transition), background var(--transition), color var(--transition);
+            user-select: none;
+        }
+        
+        .tab:hover {
+            transform: translateY(-4px) scale(1.02);
+            background: var(--accent-hover);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.06);
+        }
+        
+        .tab.active {
+            background: linear-gradient(90deg, rgba(76, 175, 80, 0.14), rgba(46, 125, 50, 0.08));
+            color: var(--green-900);
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.08);
+        }
+        
+        .wrap {
+            width: 94%;
+            max-width: 1100px;
+            margin: 20px auto;
+            min-height: 60vh;
+        }
+        
+        main.card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--soft-shadow);
+            overflow: visible;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        
+        .left {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .btn {
+            background: var(--green-500);
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            box-shadow: 0 6px 18px rgba(76, 175, 80, 0.15);
+            transition: transform 160ms ease, box-shadow 160ms ease;
+        }
+        
+        .btn.secondary {
+            background: #fff;
+            color: var(--green-700);
+            border: 2px solid var(--green-300);
+            box-shadow: none;
+            font-weight: 700
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px)
+        }
+        
+        .search {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .search input {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #e6f2e6;
+            min-width: 220px;
+            box-shadow: 0 2px 8px rgba(10, 20, 8, 0.03)
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 18px;
+        }
+        
+        @media (max-width:980px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+            .top-nav-wrap {
+                top: 8px
+            }
+        }
+        /* table card */
+        
+        .table-card {
+            background: linear-gradient(180deg, #fff, #fcfff6);
+            padding: 14px;
+            border-radius: 12px;
+            box-shadow: var(--soft-shadow);
+        }
+        
+        .table-title {
+            font-size: 1.1rem;
+            color: var(--green-700);
+            margin: 6px;
+            font-weight: 700
+        }
+        
+        table.inventory {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 15px;
+        }
+        
+        table.inventory thead th {
+            background: var(--green-700);
+            color: #fff;
+            font-weight: 700;
+            padding: 14px 12px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        
+        table.inventory tbody tr {
+            background: white;
+            transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+        }
+        
+        table.inventory tbody td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #eef7ee;
+            color: #1b4e2b;
+            vertical-align: middle;
+        }
+        
+        table.inventory tbody tr:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(46, 125, 50, 0.06);
+            background: linear-gradient(90deg, #ffffff, #f7fff7);
+        }
+        
+        .small-muted {
+            font-size: .92rem;
+            color: var(--muted)
+        }
+        
+        aside .side-card {
+            background: linear-gradient(180deg, #fff, #fbfff9);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: var(--soft-shadow);
+            margin-bottom: 14px
+        }
+        
+        .mini-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e6f7e6;
+            align-items: center
+        }
+        
+        .pill {
+            background: #f1fff1;
+            color: var(--green-700);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+            border: 1px solid #e6f7e6
+        }
+        
+        .practicas-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+        
+        .box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: var(--soft-shadow);
+            flex: 1;
+            min-width: 220px;
+            transition: transform var(--transition), box-shadow var(--transition)
+        }
+        
+        .box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(14, 30, 10, 0.06)
+        }
+        
+        .box h4 {
+            margin: 6px 0 10px 0;
+            color: var(--green-700)
+        }
+        
+        .box textarea {
+            width: 100%;
+            min-height: 110px;
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid #e6f4e6;
+            resize: vertical;
+            font-family: inherit
+        }
+        /* modal styles */
+        
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(6, 12, 6, 0.45);
+            z-index: 60;
+            padding: 16px;
+        }
+        
+        .modal {
+            background: white;
+            width: 100%;
+            max-width: 720px;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 20px 60px rgba(8, 18, 8, 0.45);
+            transform: translateY(10px);
+            transition: all .18s ease;
+        }
+        
+        .modal.show {
+            transform: none
+        }
+        
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px
+        }
+        
+        .col {
+            flex: 1
+        }
+        
+        label {
+            display: block;
+            font-size: .9rem;
+            margin-bottom: 6px;
+            color: #2a5d2a;
+            font-weight: 600
+        }
+        
+        input[type=text],
+        input[type=number],
+        input[type=date],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #e8f6e8;
+            font-size: .95rem
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 12px
+        }
+        
+        .danger {
+            background: #ff5252;
+            box-shadow: none
+        }
+        
+        .icon-btn {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            transition: background .12s
+        }
+        
+        .icon-btn:hover {
+            background: #f6f6f6
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 18px;
+            color: var(--muted);
+            padding-top: 8px
+        }
+        /* small responsive helper for tab content */
+        
+        .hidden {
+            display: none
+        }
+        /* login modal tweaks */
+        
+        .login-card {
+            max-width: 380px;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center
+        }
+        
+        .login-card h2 {
+            margin: 6px 0 12px;
+            color: var(--green-700)
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BANNER -->
+    <header class="banner" role="banner">
+        <div class="logo-slot" aria-hidden="true">
+            <img src="data:image/svg+xml;utf8,
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'><path d='M6 2h12v2h-1v2.09a6 6 0 011.46 9.91L18.3 16H5.7L5.54 16A6 6 0 0012 20a4 4 0 110-8 4 4 0 010 8z'/></svg>" alt="logo">
+        </div>
+        <div class="banner-inner">
+            <h1 class="title">Gestor de Laboratorio de Ciencias</h1>
+            <div class="subtitle">Inventario • Prácticas • Control del laboratorio</div>
+        </div>
+    </header>
+
+    <!-- Top navigation (persistent) -->
+    <div class="top-nav-wrap" aria-hidden="false">
+        <nav class="top-nav" role="navigation" aria-label="Navegación principal">
+            <div class="tab active" data-target="viewInicio">INICIO</div>
+            <div class="tab" data-target="viewInventario">INVENTARIO</div>
+        </nav>
+    </div>
+
+    <div class="wrap">
+        <main class="card" role="main">
+
+            <!-- VIEWS: cada "ventana" es una sección distinta -->
+            <!-- INICIO -->
+            <section id="viewInicio" class="view">
+                <div style="display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+                    <div>
+                        <h2 style="margin:0 0 8px 0; color:var(--green-700)">Bienvenido</h2>
+                        <div class="small-muted">Utiliza la barra de navegación para moverte por la aplicación.</div>
+                    </div>
+                </div>
+
+                <hr style="margin:16px 0; border:none; height:1px; background:#eef7ee;">
+
+                <div style="display:grid; grid-template-columns:1fr 340px; gap:18px;">
+                    <div class="table-card">
+                        <div class="table-title">Resumen rápido</div>
+                        <p class="small-muted">Registros de reactivos, prácticas recientes y alertas.</p>
+
+                        <div style="display:flex; gap:12px; margin-top:12px;">
+                            <div style="flex:1; padding:12px; border-radius:12px; background:linear-gradient(180deg,#fff,#fbfff9); box-shadow:var(--soft-shadow)">
+                                <div style="font-weight:700; color:var(--green-700);">Reactivos</div>
+                                <div id="countCards" style="font-size:1.4rem; font-weight:800; margin-top:8px;">0</div>
+                                <div class="small-muted" style="margin-top:6px;">Total en inventario</div>
+                            </div>
+
+                            <div style="flex:1; padding:12px; border-radius:12px; background:linear-gradient(180deg,#fff,#fbfff9); box-shadow:var(--soft-shadow)">
+                                <div style="font-weight:700; color:var(--green-700);">Prácticas</div>
+                                <div id="countPracticasCard" style="font-size:1.4rem; font-weight:800; margin-top:8px;">0</div>
+                                <div class="small-muted" style="margin-top:6px;">Registradas</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <aside>
+                        <div class="side-card">
+                            <h3>Poca unidad</h3>
+                            <div id="lowStockListInicio" aria-live="polite">
+                                <div class="mini-row">
+                                    <div class="small-muted">Sin alertas</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="height:12px"></div>
+
+                        <div class="side-card">
+                            <h3>Atajos</h3>
+                            <div style="display:flex; gap:8px; flex-direction:column;">
+                                <button class="btn" onclick="openModal('modalReactivo')">Agregar reactivo</button>
+                                <button class="btn secondary" onclick="openModal('modalPractica')">Nueva práctica</button>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- INVENTARIO -->
+            <section id="viewInventario" class="view hidden" aria-labelledby="inventoryTitle">
+                <div class="actions" aria-hidden="false">
+                    <div class="left">
+                        <button class="btn" id="openAddReactivo">Agregar reactivo</button>
+                    </div>
+
+                    <div class="search">
+                        <input id="searchInput" placeholder="Buscar reactivo o práctica..." />
+                        <button class="btn secondary" id="btnClear">Limpiar</button>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <section class="table-card">
+                        <div class="table-title" id="inventoryTitle">Inventario de Reactivos</div>
+
+                        <table class="inventory" id="tableReactivos" aria-describedby="inventoryDescription">
+                            <thead>
+                                <tr>
+                                    <th>Nombre del reactivo</th>
+                                    <th>Cantidad</th>
+                                    <th>Unidad</th>
+                                    <th>Estado</th>
+                                    <th style="text-align:right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-name="Agua destilada">
+                                    <td>Agua destilada</td>
+                                    <td>100</td>
+                                    <td>ml</td>
+                                    <td><span class="pill">Disponible</span></td>
+                                    <td style="text-align:right">
+                                        <button class="icon-btn" title="Editar" onclick="editarReactivoRow(this)">✎</button>
+                                        <button class="icon-btn" title="Borrar" onclick="borrarReactivoRow(this)">🗑</button>
+                                    </td>
+                                </tr>
+
+                                <tr data-name="Sulfato de cobre">
+                                    <td>Sulfato de cobre</td>
+                                    <td>200</td>
+                                    <td>g</td>
+                                    <td><span class="pill">Bajo stock</span></td>
+                                    <td style="text-align:right">
+                                        <button class="icon-btn" title="Editar" onclick="editarReactivoRow(this)">✎</button>
+                                        <button class="icon-btn" title="Borrar" onclick="borrarReactivoRow(this)">🗑</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+                            <span class="small-muted">Registros: <strong id="countReactivos">2</strong></span>
+                        </div>
+                    </section>
+
+                    <aside>
+                        <div class="side-card">
+                            <h3>Poca unidad de reactivos</h3>
+                            <div class="mini-list" id="lowStockList" aria-live="polite">
+                                <div class="mini-row">
+                                    <div>Agua destilada</div>
+                                    <div class="pill">100 ml</div>
+                                </div>
+                                <div class="mini-row">
+                                    <div>Sulfato de cobre</div>
+                                    <div class="pill">200 g</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="side-card">
+                            <h3>Registro de prácticas</h3>
+                            <div class="muted small-muted" style="margin-bottom:10px;">Prácticas recientes</div>
+                            <div id="recentPractices" style="display:flex; flex-direction:column; gap:8px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center">
+                                    <div><strong>Reacciones químicas</strong>
+                                    </div>
+                                    <div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center">
+                                    <div><strong>Medición de densidad</strong>
+                                    </div>
+                                    <div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- PRÁCTICAS -->
+            <section id="viewPracticas" class="view hidden">
+                <div class="table-title">Registro de Prácticas</div>
+                <div class="practicas-grid" style="margin-top:12px;">
+                    <div class="box">
+                        <h4>Reactivos utilizados</h4>
+                        <ol id="reactivosUsadosList" class="small-muted">
+                            <li>Agua destilada</li>
+                            <li>Sulfato de cobre</li>
+                        </ol>
+                    </div>
+
+                    <div class="box" style="flex:2;">
+                        <h4>Nombre de la práctica</h4>
+                        <textarea id="descPractica" placeholder="Descripción o pasos a seguir..."></textarea>
+                        <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+                            <button class="btn" id="savePracticaBtn">Guardar práctica</button>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <h4>Observaciones</h4>
+                        <textarea id="obsPractica"></textarea>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            <div style="margin-top:12px; color:var(--muted); font-size:0.95rem; text-align:center;">
+                Instituto Tecnológico Superior de Pátzcuaro © 2025 — Gestor de Laboratorio
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODAL: Agregar Reactivo -->
+    <div class="modal-backdrop" id="modalReactivo" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalReactivoTitle">
+            <h3 id="modalReactivoTitle">Agregar / Editar Reactivo</h3>
+
+            <div class="row">
+                <div class="col">
+                    <label for="rNombre">Nombre</label>
+                    <input id="rNombre" type="text" placeholder="Ej. Ácido acético" />
+                </div>
+                <div class="col">
+                    <label for="rCantidad">Cantidad</label>
+                    <input id="rCantidad" type="number" min="0" placeholder="Ej. 250" />
+                </div>
+                <div class="col" style="flex:0.8">
+                    <label for="rUnidad">Unidad</label>
+                    <input id="rUnidad" type="text" placeholder="g / ml / L" />
+                </div>
+            </div>
+
+            <div class="row" style="align-items:center;">
+                <div class="col">
+                    <label for="rEstado">Estado</label>
+                    <select id="rEstado">
+            <option value="Disponible">Disponible</option>
+            <option value="Bajo stock">Bajo stock</option>
+            <option value="Agotado">Agotado</option>
+          </select>
+                </div>
+                <div class="col" style="flex:0.5">
+                    <label>&nbsp;</label>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn" id="saveReactivo">Guardar</button>
+                        <button class="btn secondary" onclick="closeModal('modalReactivo')">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL: Agregar Practica -->
+    <div class="modal-backdrop" id="modalPractica" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalPracticaTitle">
+            <h3 id="modalPracticaTitle">Agregar nueva práctica</h3>
+
+            <div style="margin-bottom:10px;">
+                <label for="pNombre">Nombre de la práctica</label>
+                <input id="pNombre" type="text" placeholder="Ej. Título de la práctica" />
+            </div>
+
+            <div style="margin-bottom:10px;">
+                <label for="pFecha">Fecha</label>
+                <input id="pFecha" type="date" />
+            </div>
+
+            <div style="margin-bottom:10px;">
+                <label for="pDesc">Descripción / Pasos</label>
+                <textarea id="pDesc" placeholder="Describe la práctica..."></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn" id="savePracticaModal">Agregar práctica</button>
+                <button class="btn secondary" onclick="closeModal('modalPractica')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ---------- helpers modales ----------
+        const modalBackdrop = (id) => document.getElementById(id);
+        const openModal = (id) => {
+            const el = modalBackdrop(id);
+            if (!el) return;
+            el.style.display = 'flex';
+            el.setAttribute('aria-hidden', 'false');
+            setTimeout(() => el.querySelector('.modal')?.classList.add('show'), 10);
+        };
+
+        const closeModal = (id) => {
+            const el = modalBackdrop(id);
+            if (!el) return;
+            el.querySelector('.modal')?.classList.remove('show');
+            setTimeout(() => {
+                el.style.display = 'none';
+                el.setAttribute('aria-hidden', 'true');
+            }, 180);
+        };
+
+        // ---------- nav tabs ----------
+        document.querySelectorAll('.top-nav .tab').forEach(t => {
+            t.addEventListener('click', () => {
+                document.querySelectorAll('.top-nav .tab').forEach(x => x.classList.remove('active'));
+                t.classList.add('active');
+                const target = t.dataset.target;
+                document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+                const viewEl = document.getElementById(target);
+                if (viewEl) viewEl.classList.remove('hidden');
+                window.scrollTo({
+                    top: document.querySelector('main.card').offsetTop - 8,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // ---------- wiring de botones rápidos ----------
+        document.getElementById('openAddReactivo')?.addEventListener('click', () => {
+            openModal('modalReactivo');
+            editingRow = null;
+        });
+        document.getElementById('openAddReactivoFromInicio')?.addEventListener('click', () => {
+            document.querySelector('[data-target="viewInventario"]').click();
+            setTimeout(() => openModal('modalReactivo'), 220);
+        });
+        document.getElementById('openAddPractica')?.addEventListener('click', () => openModal('modalPractica'));
+        document.getElementById('openAddPracticaFromInicio')?.addEventListener('click', () => {
+            document.querySelector('[data-target="viewPracticas"]').click();
+            setTimeout(() => openModal('modalPractica'), 220);
+        });
+
+        // ---------- search filter ----------
+        const searchInput = document.getElementById('searchInput');
+        searchInput?.addEventListener('input', (e) => {
+            const q = e.target.value.trim().toLowerCase();
+            filterInventory(q);
+        });
+        document.getElementById('btnClear')?.addEventListener('click', () => {
+            if (searchInput) {
+                searchInput.value = '';
+                filterInventory('');
+            }
+        });
+
+        function filterInventory(q) {
+            const rows = document.querySelectorAll('#tableReactivos tbody tr');
+            rows.forEach(r => {
+                const name = (r.dataset.name || r.cells[0].innerText || '').toLowerCase();
+                const qty = (r.cells[1]?.innerText || '').toLowerCase();
+                const unit = (r.cells[2]?.innerText || '').toLowerCase();
+                if (!q || name.includes(q) || qty.includes(q) || unit.includes(q)) {
+                    r.style.display = '';
+                } else r.style.display = 'none';
+            });
+        }
+
+        // ---------- CRUD reactivos ----------
+        let editingRow = null;
+        document.getElementById('saveReactivo')?.addEventListener('click', () => {
+            const nombre = document.getElementById('rNombre').value.trim();
+            const cantidad = document.getElementById('rCantidad').value;
+            const unidad = document.getElementById('rUnidad').value.trim();
+            const estado = document.getElementById('rEstado').value;
+
+            if (!nombre || cantidad === '' || !unidad) {
+                alert('Completa todos los campos del reactivo.');
+                return;
+            }
+
+            if (editingRow) {
+                editingRow.cells[0].innerText = nombre;
+                editingRow.cells[1].innerText = cantidad;
+                editingRow.cells[2].innerText = unidad;
+                editingRow.cells[3].innerHTML = `<span class="pill">${escapeHtml(estado)}</span>`;
+                editingRow.dataset.name = nombre;
+            } else {
+                const tbody = document.querySelector('#tableReactivos tbody');
+                const tr = document.createElement('tr');
+                tr.dataset.name = nombre;
+                tr.innerHTML = `
+                    <td>${escapeHtml(nombre)}</td>
+                    <td>${escapeHtml(cantidad)}</td>
+                    <td>${escapeHtml(unidad)}</td>
+                    <td><span class="pill">${escapeHtml(estado)}</span></td>
+                    <td style="text-align:right">
+                        <button class="icon-btn" title="Editar" onclick="editarReactivoRow(this)">✎</button>
+                        <button class="icon-btn" title="Borrar" onclick="borrarReactivoRow(this)">🗑</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            closeModal('modalReactivo');
+            updateCountsAndLowStock();
+        });
+
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text;
+            return text.replace(/[&<>"']/g, (m) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[m]);
+        }
+
+        function editarReactivoRow(btn) {
+            const tr = btn.closest('tr');
+            if (!tr) return;
+            editingRow = tr;
+            document.getElementById('rNombre').value = tr.cells[0].innerText;
+            document.getElementById('rCantidad').value = tr.cells[1].innerText;
+            document.getElementById('rUnidad').value = tr.cells[2].innerText;
+            const estadoText = tr.cells[3].innerText.trim();
+            document.getElementById('rEstado').value = estadoText;
+            openModal('modalReactivo');
+        }
+
+        function borrarReactivoRow(btn) {
+            const tr = btn.closest('tr');
+            if (!tr) return;
+            if (confirm('¿Eliminar este reactivo?')) {
+                tr.remove();
+                updateCountsAndLowStock();
+            }
+        }
+
+        function updateCountsAndLowStock() {
+            const rows = document.querySelectorAll('#tableReactivos tbody tr');
+            document.getElementById('countReactivos').innerText = rows.length;
+            document.getElementById('countCards').innerText = rows.length;
+
+            const lowStockList = document.getElementById('lowStockList');
+            const lowStockListInicio = document.getElementById('lowStockListInicio');
+            [lowStockList, lowStockListInicio].forEach(el => {
+                if (el) el.innerHTML = '';
+            });
+
+            let found = 0;
+            rows.forEach(r => {
+                const qty = parseFloat(r.cells[1]?.innerText) || 0;
+                const estado = (r.cells[3]?.innerText || '').toLowerCase();
+                if (qty <= 200 || estado.includes('bajo') || estado.includes('agotado')) {
+                    found++;
+                    const name = r.cells[0].innerText;
+                    const unit = r.cells[2].innerText;
+                    const node = document.createElement('div');
+                    node.className = 'mini-row';
+                    node.innerHTML = `<div>${escapeHtml(name)}</div><div class="pill">${escapeHtml(r.cells[1].innerText)} ${escapeHtml(unit)}</div>`;
+                    if (lowStockList) lowStockList.appendChild(node.cloneNode(true));
+                    if (lowStockListInicio) lowStockListInicio.appendChild(node.cloneNode(true));
+                }
+            });
+
+            if (lowStockList && !lowStockList.children.length) {
+                const none = document.createElement('div');
+                none.className = 'mini-row';
+                none.innerHTML = `<div class="small-muted">No hay reactivos con baja unidad</div>`;
+                lowStockList.appendChild(none);
+            }
+            if (lowStockListInicio && !lowStockListInicio.children.length) {
+                const none = document.createElement('div');
+                none.className = 'mini-row';
+                none.innerHTML = `<div class="small-muted">Sin alertas</div>`;
+                lowStockListInicio.appendChild(none);
+            }
+        }
+
+        // ---------- prácticas ----------
+        document.getElementById('savePracticaBtn')?.addEventListener('click', () => {
+            const name = document.getElementById('descPractica').value.trim();
+            const obs = document.getElementById('obsPractica').value.trim();
+            if (!name) {
+                alert('Describe el nombre o pasos de la práctica (puede ser breve).');
+                return;
+            }
+            const container = document.getElementById('recentPractices') || document.querySelector('.side-card:nth-of-type(2) > div:nth-child(3)');
+            const newPr = document.createElement('div');
+            newPr.style.display = 'flex';
+            newPr.style.justifyContent = 'space-between';
+            newPr.style.alignItems = 'center';
+            newPr.style.marginTop = '8px';
+            newPr.innerHTML = `<div><strong>${escapeHtml(name.substring(0, 40))}</strong><div class="small-muted">Guardada</div></div><div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>`;
+            if (container) container.appendChild(newPr);
+            document.getElementById('descPractica').value = '';
+            document.getElementById('obsPractica').value = '';
+            const countP = document.getElementById('countPracticasCard');
+            countP && (countP.innerText = (parseInt(countP.innerText || '0') + 1));
+            alert('Práctica guardada (temporal, en la interfaz).');
+        });
+
+        document.getElementById('savePracticaModal')?.addEventListener('click', () => {
+            const nombre = document.getElementById('pNombre').value.trim();
+            const fecha = document.getElementById('pFecha').value;
+            const desc = document.getElementById('pDesc').value.trim();
+            if (!nombre || !fecha) {
+                alert('Completa al menos el nombre y la fecha de la práctica.');
+                return;
+            }
+            const container = document.getElementById('recentPractices') || document.querySelector('.side-card:nth-of-type(2) > div:nth-child(3)');
+            const newPr = document.createElement('div');
+            newPr.style.display = 'flex';
+            newPr.style.justifyContent = 'space-between';
+            newPr.style.alignItems = 'center';
+            newPr.style.marginTop = '8px';
+            newPr.innerHTML = `<div><strong>${escapeHtml(nombre)}</strong><div class="small-muted">${escapeHtml(fecha)}</div></div><div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>`;
+            if (container) container.appendChild(newPr);
+            closeModal('modalPractica');
+            const countP = document.getElementById('countPracticasCard');
+            countP && (countP.innerText = (parseInt(countP.innerText || '0') + 1));
+        });
+
+        // ---------- misc ----------
+        function focusTable() {
+            const t = document.querySelector('#tableReactivos');
+            if (!t) return;
+            window.scrollTo({
+                top: t.getBoundingClientRect().top + window.scrollY - 80,
+                behavior: 'smooth'
+            });
+        }
+
+        function verPracticaSample() {
+            alert('Aquí se abriría la práctica para ver detalles (funcionalidad futura).');
+        }
+
+        // close modals when clicking outside modal content
+        document.querySelectorAll('.modal-backdrop').forEach(back => {
+            back.addEventListener('click', (e) => {
+                if (e.target === back) closeModal(back.id);
+            });
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-backdrop').forEach(back => back.style.display === 'flex' ? closeModal(back.id) : null);
+            }
+        });
+
+        // expose inline onclicks
+        window.editarReactivoRow = editarReactivoRow;
+        window.borrarReactivoRow = borrarReactivoRow;
+        window.verPracticaSample = verPracticaSample;
+
+        // ---------- demo login ----------
+        document.getElementById('doLogin')?.addEventListener('click', () => {
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value;
+            if (u === 'profesor' && p === 'demo') {
+                alert('Bienvenido, demo');
+                closeModal('modalLogin');
+            } else if (!u || !p) {
+                alert('Ingresa usuario y contraseña');
+            } else {
+                alert('Sesión iniciada (demo).');
+                closeModal('modalLogin');
+            }
+        });
+
+        // ---------- small demo export ----------
+        document.getElementById('exportDemo')?.addEventListener('click', () => {
+            alert('Función de exportar (demo): Aquí podrías conectar descarga CSV/PDF.');
+        });
+
+        // init
+        updateCountsAndLowStock();
+        window.addEventListener('load', () => {
+            setTimeout(() => openModal('modalLogin'), 400);
+        });
+    </script>
+
+</body>
+
+</html>
