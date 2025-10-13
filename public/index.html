@@ -829,6 +829,21 @@
                 editingRow.cells[3].innerHTML = `<span class="pill">${escapeHtml(estado)}</span>`;
                 editingRow.dataset.name = nombre;
             } else {
+                fetch("/save_reactivo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        nombre: nombre,
+                        cantidad: cantidad,
+                        unidad: unidad,
+                        estado: estado
+                    })
+                })
+                .then((data) => data.json())
+                .then((data) => console.log(data))
+
                 const tbody = document.querySelector('#tableReactivos tbody');
                 const tr = document.createElement('tr');
                 tr.dataset.name = nombre;
