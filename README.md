@@ -1,7 +1,7 @@
 # 🧪 Gestor de Laboratorio de Ciencias
 
 Aplicación web diseñada para gestionar el inventario de **reactivos químicos** y las **prácticas de laboratorio** de manera sencilla y visual.  
-Proporciona una interfaz moderna, clara y adaptable que permite al usuario registrar, consultar y administrar los recursos del laboratorio.
+Proporciona una interfaz moderna, clara y adaptable que permite al usuario registrar, consultar y administrar los recursos del laboratorio. (Desarrollada con tecnologías muy básicas)
 
 ---
 
