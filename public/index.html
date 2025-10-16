@@ -456,12 +456,9 @@
 </head>
 
 <body>
-
     <!-- BANNER -->
     <header class="banner" role="banner">
         <div class="logo-slot" aria-hidden="true">
-            <img src="data:image/svg+xml;utf8,
-        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'><path d='M6 2h12v2h-1v2.09a6 6 0 011.46 9.91L18.3 16H5.7L5.54 16A6 6 0 0012 20a4 4 0 110-8 4 4 0 010 8z'/></svg>" alt="logo">
         </div>
         <div class="banner-inner">
             <h1 class="title">Gestor de Laboratorio de Ciencias</h1>
@@ -514,15 +511,6 @@
                     </div>
 
                     <aside>
-                        <div class="side-card">
-                            <h3>Poca unidad</h3>
-                            <div id="lowStockListInicio" aria-live="polite">
-                                <div class="mini-row">
-                                    <div class="small-muted">Sin alertas</div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div style="height:12px"></div>
 
                         <div class="side-card">
@@ -563,65 +551,21 @@
                                     <th style="text-align:right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr data-name="Agua destilada">
-                                    <td>Agua destilada</td>
-                                    <td>100</td>
-                                    <td>ml</td>
-                                    <td><span class="pill">Disponible</span></td>
-                                    <td style="text-align:right">
-                                        <button class="icon-btn" title="Editar" onclick="editarReactivoRow(this)">✎</button>
-                                        <button class="icon-btn" title="Borrar" onclick="borrarReactivoRow(this)">🗑</button>
-                                    </td>
-                                </tr>
-
-                                <tr data-name="Sulfato de cobre">
-                                    <td>Sulfato de cobre</td>
-                                    <td>200</td>
-                                    <td>g</td>
-                                    <td><span class="pill">Bajo stock</span></td>
-                                    <td style="text-align:right">
-                                        <button class="icon-btn" title="Editar" onclick="editarReactivoRow(this)">✎</button>
-                                        <button class="icon-btn" title="Borrar" onclick="borrarReactivoRow(this)">🗑</button>
-                                    </td>
-                                </tr>
+                            <tbody id="component-container">
                             </tbody>
                         </table>
 
                         <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
-                            <span class="small-muted">Registros: <strong id="countReactivos">2</strong></span>
+                            <span class="small-muted">Registros: <strong id="countReactivos">0</strong></span>
                         </div>
                     </section>
 
                     <aside>
-                        <div class="side-card">
-                            <h3>Poca unidad de reactivos</h3>
-                            <div class="mini-list" id="lowStockList" aria-live="polite">
-                                <div class="mini-row">
-                                    <div>Agua destilada</div>
-                                    <div class="pill">100 ml</div>
-                                </div>
-                                <div class="mini-row">
-                                    <div>Sulfato de cobre</div>
-                                    <div class="pill">200 g</div>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="side-card">
                             <h3>Registro de prácticas</h3>
-                            <div class="muted small-muted" style="margin-bottom:10px;">Prácticas recientes</div>
                             <div id="recentPractices" style="display:flex; flex-direction:column; gap:8px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center">
-                                    <div><strong>Reacciones químicas</strong>
-                                    </div>
-                                    <div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; align-items:center">
-                                    <div><strong>Medición de densidad</strong>
-                                    </div>
-                                    <div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>
-                                </div>
+
                             </div>
                         </div>
                     </aside>
@@ -688,9 +632,9 @@
                 <div class="col">
                     <label for="rEstado">Estado</label>
                     <select id="rEstado">
-            <option value="Disponible">Disponible</option>
-            <option value="Bajo stock">Bajo stock</option>
-            <option value="Agotado">Agotado</option>
+                <option value="Disponible">Disponible</option>
+                <option value="Bajo stock">Bajo stock</option>
+                <option value="Agotado">Agotado</option>
           </select>
                 </div>
                 <div class="col" style="flex:0.5">
@@ -716,26 +660,269 @@
             </div>
 
             <div style="margin-bottom:10px;">
-                <label for="pFecha">Fecha</label>
-                <input id="pFecha" type="date" />
-            </div>
-
-            <div style="margin-bottom:10px;">
                 <label for="pDesc">Descripción / Pasos</label>
                 <textarea id="pDesc" placeholder="Describe la práctica..."></textarea>
             </div>
 
+            <div style="margin-bottom:10px;">
+                <label for="pReactivos">Reactivos</label>
+                <div id="pReactivos" style="margin-top:5px;">
+                    <ul style="list-style:none; padding-left:0; margin:0;" id="lista-reactivos">
+                    </ul>
+                </div>
+            </div>
+
             <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button class="btn" id="savePracticaModal">Agregar práctica</button>
+                <button class="btn" id="savePracticaModal" onclick="guardarPractica()">Agregar práctica</button>
                 <button class="btn secondary" onclick="closeModal('modalPractica')">Cancelar</button>
             </div>
         </div>
     </div>
 
+        <!-- MODAL: Ver Práctica -->
+    <div class="modal-backdrop" id="modalVerPractica" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalVerPracticaTitle">
+            <h3 id="modalVerPracticaTitle">Detalles de la práctica</h3>
+
+            <!-- Nombre -->
+            <div style="margin-bottom:10px;">
+                <label><strong>Nombre:</strong></label>
+                <p id="vNombre" style="margin:5px 0; padding:8px; background:#f6f6f6; border-radius:6px;"></p>
+            </div>
+
+            <!-- Descripción -->
+            <div style="margin-bottom:10px;">
+                <label><strong>Descripción / Pasos:</strong></label>
+                <p id="vDesc" style="margin:5px 0; padding:8px; background:#f6f6f6; border-radius:6px; white-space:pre-wrap;"></p>
+            </div>
+
+            <!-- Reactivos -->
+            <div style="margin-bottom:10px;">
+                <label><strong>Reactivos utilizados:</strong></label>
+                <ul id="vReactivos" style="list-style-type:disc; margin-left:20px; padding-left:0; background:#f6f6f6; border-radius:6px; padding:8px;">
+
+                </ul>
+            </div>
+
+            <!-- Botones -->
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn secondary" onclick="closeModal('modalVerPractica')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        function guardarPractica() {
+            fetch("/add_practica", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nombre: document.getElementById("pNombre").value.trim(),
+                    desc: document.getElementById("pDesc").value.trim(),
+                    reactivos: Array.from(
+                        document.querySelectorAll('#lista-reactivos input[type="checkbox"]:checked')
+                    ).map(checkbox => checkbox.value)
+                })
+            })
+            .then((response) => {
+                console.log(response.status)
+                closeModal("modalPractica")
+            })
+            .catch((err) => {
+                alert("Error al intentar guardar práctica:", err)
+            })
+        }
+
+        var itemCount = 0
+        var items = []
+
+        var practicasCount = 0
+        var practicas = []
+
+        fetch("/get_practicas", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then((raw) => raw.json())
+        .then((data) => {
+            data.forEach((item) => {
+                practicasCount++
+                practicas.push(item)
+
+                var div1 = document.createElement("div")
+                div1.style.display = "flex"
+                div1.style.justifyContent = "space-between"
+                div1.style.alignItems = "center"
+                div1.style.marginBottom = "8px"
+
+                var div2 = document.createElement("div")
+                var strong = document.createElement("strong")
+
+                strong.textContent = item["nombre"]
+                div2.appendChild(strong)
+
+                var div3 = document.createElement("div")
+                var button = document.createElement("button")
+                button.className = "btn secondary"
+                button.textContent = "Ver"
+
+                button.onclick = function() {
+                    document.getElementById("vNombre").textContent = item["nombre"]
+                    document.getElementById("vDesc").textContent = item["desc"]
+
+                    var reactivos = document.getElementById("vReactivos")
+                    reactivos.innerHTML = ""
+
+                    item["reactivos"].forEach((data) => {
+                        var li = document.createElement("li")
+
+                        li.textContent = data
+                        reactivos.appendChild(li)
+                    })
+
+                    openModal("modalVerPractica")
+                }
+                div3.appendChild(button)
+
+                div1.appendChild(div2)
+                div1.appendChild(div3)
+
+                document.getElementById("recentPractices").appendChild(div1)
+            })
+
+            document.getElementById("countPracticasCard").textContent = practicasCount
+        })
+
+        fetch("/get_reactivos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
+        .then((raw) => raw.json())
+        .then((data) => {
+            data.forEach((item) => {
+                itemCount++
+                items.push(item)
+
+                console.log(item)
+
+                let tr1 = document.createElement("tr")
+                tr1.setAttribute("data-name", item["nombre"])
+
+                var td1 = document.createElement("td")
+                td1.textContent = item["nombre"]
+
+                tr1.appendChild(td1)
+
+                var td2 = document.createElement("td")
+                td2.textContent = item["cantidad"]
+
+                tr1.appendChild(td2)
+
+                var td3 = document.createElement("td")
+                td3.textContent = item["unidad"]
+
+                tr1.appendChild(td3)
+
+                var td4 = document.createElement("td")
+
+                var span = document.createElement("span")
+                span.className = "pill"
+                span.textContent = item["estado"]
+
+                td4.appendChild(span)
+                tr1.appendChild(td4)
+
+                var td5 = document.createElement("td")
+                td5.style = "text-align: right"
+
+                var btn1 = document.createElement("button")
+                btn1.classList = "icon-btn"
+                btn1.title = "Editar"
+                btn1.onclick = function() {
+                    editarReactivoRow(this)
+                }
+                btn1.textContent = "✎"
+
+                td5.appendChild(btn1)
+
+                var btn2 = document.createElement("button")
+                btn2.classList = "icon-btn"
+                btn2.title = "Borrar"
+                btn2.setAttribute("data-name-pls", item["nombre"])
+                btn2.onclick = function() {
+                    borrarReactivoRow(this)
+                }
+                btn2.textContent = "🗑"
+
+                td5.appendChild(btn2)
+
+                tr1.appendChild(td5)
+
+                document.getElementById("component-container").appendChild(tr1)
+                
+                var li1 = document.createElement("li")
+                var label1 = document.createElement("label")
+
+                var input1 = document.createElement("input")
+                input1.type = "checkbox"
+                input1.name = "reactivos"
+                input1.value = item["nombre"]
+
+                label1.appendChild(input1)
+                label1.appendChild(document.createTextNode(" " + item["nombre"]))
+
+                li1.appendChild(label1)
+                document.getElementById("lista-reactivos").appendChild(li1)
+            })
+
+            document.getElementById("countReactivos").textContent = itemCount
+            document.getElementById("countCards").textContent = itemCount
+            console.log(itemCount)
+        })
+
+        function borrarReactivoRow(btn) {
+            const tr = btn.closest('tr');
+            const name = btn.getAttribute("data-name-pls")
+
+            console.log(name)
+
+            if (!tr) return;
+            if (confirm('¿Eliminar este reactivo?')) {
+                tr.remove();
+                updateCountsAndLowStock();
+
+                fetch("delete_reactivo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "nombre": name
+                    })
+                })
+                .then((response) => response.json())
+                .then((data) => console.log(data))
+                .catch((err) => console.log(err))
+            }
+        }
+
+        let lastName = null
+
         // ---------- helpers modales ----------
         const modalBackdrop = (id) => document.getElementById(id);
         const openModal = (id) => {
+            const nombre = document.getElementById('rNombre').value.trim();
+
+            if(id == "modalReactivo") {
+                lastName = nombre
+            }
+
             const el = modalBackdrop(id);
             if (!el) return;
             el.style.display = 'flex';
@@ -828,6 +1015,20 @@
                 editingRow.cells[2].innerText = unidad;
                 editingRow.cells[3].innerHTML = `<span class="pill">${escapeHtml(estado)}</span>`;
                 editingRow.dataset.name = nombre;
+
+                fetch("/edit_reactivo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        old_nombre: lastName,
+                        nombre: nombre,
+                        cantidad: cantidad,
+                        unidad: unidad,
+                        estado: estado
+                    })
+                })
             } else {
                 fetch("/save_reactivo", {
                     method: "POST",
@@ -873,27 +1074,6 @@
                 '"': '&quot;',
                 "'": '&#39;'
             })[m]);
-        }
-
-        function editarReactivoRow(btn) {
-            const tr = btn.closest('tr');
-            if (!tr) return;
-            editingRow = tr;
-            document.getElementById('rNombre').value = tr.cells[0].innerText;
-            document.getElementById('rCantidad').value = tr.cells[1].innerText;
-            document.getElementById('rUnidad').value = tr.cells[2].innerText;
-            const estadoText = tr.cells[3].innerText.trim();
-            document.getElementById('rEstado').value = estadoText;
-            openModal('modalReactivo');
-        }
-
-        function borrarReactivoRow(btn) {
-            const tr = btn.closest('tr');
-            if (!tr) return;
-            if (confirm('¿Eliminar este reactivo?')) {
-                tr.remove();
-                updateCountsAndLowStock();
-            }
         }
 
         function updateCountsAndLowStock() {
@@ -962,10 +1142,9 @@
 
         document.getElementById('savePracticaModal')?.addEventListener('click', () => {
             const nombre = document.getElementById('pNombre').value.trim();
-            const fecha = document.getElementById('pFecha').value;
             const desc = document.getElementById('pDesc').value.trim();
-            if (!nombre || !fecha) {
-                alert('Completa al menos el nombre y la fecha de la práctica.');
+            if (!nombre) {
+                alert('Completa al menos el nombre de la práctica.');
                 return;
             }
             const container = document.getElementById('recentPractices') || document.querySelector('.side-card:nth-of-type(2) > div:nth-child(3)');
@@ -974,7 +1153,7 @@
             newPr.style.justifyContent = 'space-between';
             newPr.style.alignItems = 'center';
             newPr.style.marginTop = '8px';
-            newPr.innerHTML = `<div><strong>${escapeHtml(nombre)}</strong><div class="small-muted">${escapeHtml(fecha)}</div></div><div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>`;
+            newPr.innerHTML = `<div><strong>${escapeHtml(nombre)}</strong><div class="small-muted"></div></div><div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>`;
             if (container) container.appendChild(newPr);
             closeModal('modalPractica');
             const countP = document.getElementById('countPracticasCard');
@@ -993,6 +1172,18 @@
 
         function verPracticaSample() {
             alert('Aquí se abriría la práctica para ver detalles (funcionalidad futura).');
+        }
+
+        function editarReactivoRow(btn) {
+            const tr = btn.closest('tr');
+            if (!tr) return;
+            editingRow = tr;
+            document.getElementById('rNombre').value = tr.cells[0].innerText;
+            document.getElementById('rCantidad').value = tr.cells[1].innerText;
+            document.getElementById('rUnidad').value = tr.cells[2].innerText;
+            const estadoText = tr.cells[3].innerText.trim();
+            document.getElementById('rEstado').value = estadoText;
+            openModal('modalReactivo');
         }
 
         // close modals when clicking outside modal content
