@@ -193,6 +193,14 @@
             box-shadow: none;
             font-weight: 700
         }
+
+        .btn.delete {
+            background: #fff;
+            color: #ff5454;
+            border: 2px solid #ff5454;
+            box-shadow: none;
+            font-weight: 700
+        }
         
         .btn:hover {
             transform: translateY(-3px)
@@ -727,11 +735,10 @@
                 })
             })
             .then((response) => {
-                console.log(response.status)
                 closeModal("modalPractica")
             })
             .catch((err) => {
-                alert("Error al intentar guardar práctica:", err)
+                console.log("Error al intentar guardar práctica:", err)
             })
         }
 
@@ -769,6 +776,27 @@
                 var button = document.createElement("button")
                 button.className = "btn secondary"
                 button.textContent = "Ver"
+
+                var button2 = document.createElement("button")
+                button2.className = "btn delete"
+                button2.textContent = "Eliminar"
+
+                div3.appendChild(button2)
+
+                button2.onclick = function() {
+                    fetch("/delete_practica", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            nombre: item["nombre"]
+                        })
+                    })
+                    .then((response) => console.log(response.status))
+
+                    div1.remove()
+                }
 
                 button.onclick = function() {
                     document.getElementById("vNombre").textContent = item["nombre"]
@@ -875,6 +903,7 @@
                 input1.value = item["nombre"]
 
                 label1.appendChild(input1)
+                label1.setAttribute("t", item["nombre"])
                 label1.appendChild(document.createTextNode(" " + item["nombre"]))
 
                 li1.appendChild(label1)
@@ -883,7 +912,6 @@
 
             document.getElementById("countReactivos").textContent = itemCount
             document.getElementById("countCards").textContent = itemCount
-            console.log(itemCount)
         })
 
         function borrarReactivoRow(btn) {
@@ -1029,6 +1057,23 @@
                         estado: estado
                     })
                 })
+
+                let label = document.querySelectorAll(`[t="${lastName}"]`)[0]
+
+                if(label) {
+                    label.setAttribute("t", nombre)
+                    label.innerHTML = ""
+
+                    let input = document.createElement("input")
+                    input.type = "checkbox"
+                    input.name = "reactivos"
+                    input.value = nombre 
+
+                    label.appendChild(input)
+                    label.appendChild(document.createTextNode(" " + nombre))
+
+                    openModal("modalVerPractica")
+                }
             } else {
                 fetch("/save_reactivo", {
                     method: "POST",
@@ -1044,6 +1089,22 @@
                 })
                 .then((data) => data.json())
                 .then((data) => console.log(data))
+
+                var li1 = document.createElement("li")
+                var label1 = document.createElement("label")
+
+                var input1 = document.createElement("input")
+                input1.type = "checkbox"
+                input1.name = "reactivos"
+                input1.id = "reactivo"
+                input1.value = nombre
+
+                label1.appendChild(input1)
+                label1.appendChild(document.createTextNode(" " + nombre))
+                label1.setAttribute("t", nombre)
+
+                li1.appendChild(label1)
+                document.getElementById("lista-reactivos").appendChild(li1)
 
                 const tbody = document.querySelector('#tableReactivos tbody');
                 const tr = document.createElement('tr');
@@ -1117,48 +1178,103 @@
             }
         }
 
-        // ---------- prácticas ----------
+        function crearPractica(nombre, descripcion = '', desdeModal = false) {
+            const container = document.getElementById('recentPractices') ||
+                document.querySelector('.side-card:nth-of-type(2) > div:nth-child(3)')
+
+            const newPr = document.createElement('div')
+            newPr.classList.add('practica-item')
+            newPr.style.display = 'flex'
+            newPr.style.justifyContent = 'space-between'
+            newPr.style.alignItems = 'center'
+            newPr.style.marginTop = '8px'
+
+            newPr.innerHTML = `
+                <div>
+                    <strong>${escapeHtml(nombre.substring(0, 40))}</strong>
+                    <div class="small-muted"></div>
+                </div>
+                <div>
+                    <button class="btn delete">Eliminar</button>
+                    <button class="btn secondary">Ver</button>
+                </div>
+            `
+
+            const btnDelete = newPr.querySelector('.delete')
+            const btnVer = newPr.querySelector('.secondary')
+
+            btnDelete.addEventListener('click', (e) => {
+                e.stopPropagation()
+                newPr.remove()
+                const countP = document.getElementById('countPracticasCard')
+                if (countP) countP.innerText = Math.max(0, parseInt(countP.innerText || '0') - 1)
+
+                fetch("/delete_practica", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        nombre: nombre
+                    })
+                })
+            })
+
+            btnVer.addEventListener('click', (e) => {
+                e.stopPropagation()
+
+                document.getElementById("vNombre").textContent = nombre
+                document.getElementById("vDesc").textContent = descripcion
+
+                const reactivos = document.getElementById("vReactivos")
+                reactivos.innerHTML = ""
+
+                document.querySelectorAll('#lista-reactivos input[type="checkbox"]:checked').forEach((data) => {
+                    const li = document.createElement("li")
+                    li.textContent = data.value
+                    reactivos.appendChild(li)
+                })
+
+                openModal("modalVerPractica")
+            })
+
+            if (container) container.appendChild(newPr)
+
+            const countP = document.getElementById('countPracticasCard')
+            if (countP) countP.innerText = (parseInt(countP.innerText || '0') + 1)
+        }
+
+
         document.getElementById('savePracticaBtn')?.addEventListener('click', () => {
-            const name = document.getElementById('descPractica').value.trim();
-            const obs = document.getElementById('obsPractica').value.trim();
+            const name = document.getElementById('descPractica').value.trim()
+            const obs = document.getElementById('obsPractica').value.trim()
+
             if (!name) {
-                alert('Describe el nombre o pasos de la práctica (puede ser breve).');
-                return;
+                alert('Describe el nombre o pasos de la práctica (puede ser breve).')
+                return
             }
-            const container = document.getElementById('recentPractices') || document.querySelector('.side-card:nth-of-type(2) > div:nth-child(3)');
-            const newPr = document.createElement('div');
-            newPr.style.display = 'flex';
-            newPr.style.justifyContent = 'space-between';
-            newPr.style.alignItems = 'center';
-            newPr.style.marginTop = '8px';
-            newPr.innerHTML = `<div><strong>${escapeHtml(name.substring(0, 40))}</strong><div class="small-muted">Guardada</div></div><div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>`;
-            if (container) container.appendChild(newPr);
-            document.getElementById('descPractica').value = '';
-            document.getElementById('obsPractica').value = '';
-            const countP = document.getElementById('countPracticasCard');
-            countP && (countP.innerText = (parseInt(countP.innerText || '0') + 1));
-            alert('Práctica guardada (temporal, en la interfaz).');
-        });
+
+            crearPractica(name, obs, false)
+
+            document.getElementById('descPractica').value = ''
+            document.getElementById('obsPractica').value = ''
+            alert('Práctica guardada (temporal, en la interfaz).')
+        })
+
 
         document.getElementById('savePracticaModal')?.addEventListener('click', () => {
-            const nombre = document.getElementById('pNombre').value.trim();
-            const desc = document.getElementById('pDesc').value.trim();
+            const nombre = document.getElementById('pNombre').value.trim()
+            const desc = document.getElementById('pDesc').value.trim()
+
             if (!nombre) {
-                alert('Completa al menos el nombre de la práctica.');
-                return;
+                alert('Completa al menos el nombre de la práctica.')
+                return
             }
-            const container = document.getElementById('recentPractices') || document.querySelector('.side-card:nth-of-type(2) > div:nth-child(3)');
-            const newPr = document.createElement('div');
-            newPr.style.display = 'flex';
-            newPr.style.justifyContent = 'space-between';
-            newPr.style.alignItems = 'center';
-            newPr.style.marginTop = '8px';
-            newPr.innerHTML = `<div><strong>${escapeHtml(nombre)}</strong><div class="small-muted"></div></div><div><button class="btn secondary" onclick="verPracticaSample()">Ver</button></div>`;
-            if (container) container.appendChild(newPr);
-            closeModal('modalPractica');
-            const countP = document.getElementById('countPracticasCard');
-            countP && (countP.innerText = (parseInt(countP.innerText || '0') + 1));
-        });
+
+            crearPractica(nombre, desc, true)
+            closeModal('modalPractica')
+        })
+
 
         // ---------- misc ----------
         function focusTable() {
@@ -1168,10 +1284,6 @@
                 top: t.getBoundingClientRect().top + window.scrollY - 80,
                 behavior: 'smooth'
             });
-        }
-
-        function verPracticaSample() {
-            alert('Aquí se abriría la práctica para ver detalles (funcionalidad futura).');
         }
 
         function editarReactivoRow(btn) {
@@ -1201,7 +1313,6 @@
         // expose inline onclicks
         window.editarReactivoRow = editarReactivoRow;
         window.borrarReactivoRow = borrarReactivoRow;
-        window.verPracticaSample = verPracticaSample;
 
         // ---------- demo login ----------
         document.getElementById('doLogin')?.addEventListener('click', () => {
