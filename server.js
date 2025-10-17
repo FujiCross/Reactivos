@@ -89,6 +89,29 @@ app.post("/delete_reactivo", (req, res) => {
     }
 })
 
+app.post("/delete_practica", (req, res) => {
+    const data = req.body
+
+    try {
+        const rawData = fs.readFileSync(practicasJson, { encoding: "utf-8" })
+        const array = JSON.parse(rawData)
+
+        const index = array.findIndex(practica => practica.nombre === data.nombre)
+        console.log(data.nombre)
+
+        if(index !== -1) {
+            array.splice(index, 1)
+            fs.writeFileSync(practicasJson, JSON.stringify(array, null, 2))
+        }
+
+        res.sendStatus(200)
+
+    } catch(err) {
+        console.log(err)
+        res.sendStatus(403)
+    }
+})
+
 app.post("/add_practica", (req, res) => {
     const data = req.body
 
